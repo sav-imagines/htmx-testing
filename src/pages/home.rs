@@ -31,24 +31,9 @@ pub async fn meow(Path(num): Path<u64>) -> axum::response::Html<String> {
 // }
 
 pub async fn home() -> axum::response::Html<String> {
-    Html(homepage())
+    Html(homepage().to_owned())
 }
 
-fn homepage() -> String {
-    "<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset=\"utf-8\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-    <script src=\"https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js\" integrity=\"sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz\" crossorigin=\"anonymous\"></script>
-  </head>
-  <body>
-    <main>
-    <button hx-get=\"/meow/2\" hx-swap=\"outerHTML\" hx-target=\"this\">
-    Hi :3
-    </button>
-    </main>
-  </body>
-</html>"
-        .to_owned()
+const fn homepage() -> &'static str {
+    include_str!("index.html")
 }
