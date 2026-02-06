@@ -3,7 +3,7 @@
 use axum::{extract::Path, response::Html};
 
 #[axum::debug_handler]
-pub async fn meow(Path(num): Path<u8>) -> axum::response::Html<String> {
+pub async fn meow(Path(num): Path<u64>) -> axum::response::Html<String> {
     println!("data: '{}'", num);
     Html(
         format!(

@@ -1,8 +1,4 @@
-use axum::{
-    Router,
-    routing::{get, post},
-    serve,
-};
+use axum::{Router, routing::get, serve};
 
 mod pages;
 
