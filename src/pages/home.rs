@@ -1,32 +1,29 @@
-// use std::{fs::File, io::Read};
+use axum::{extract::State, response::Html};
 
-use axum::{extract::Path, response::Html};
+use crate::AppState;
 
 #[axum::debug_handler]
-pub async fn meow(Path(num): Path<u64>) -> axum::response::Html<String> {
-    println!("data: '{}'", num);
-    Html(format!(
-        include_str!("new_button.html"),
-        num + 1,
-        ":3 ".repeat(num as usize)
-    ))
+pub async fn meow(State(state): State<AppState>) -> axum::response::Html<String> {
+    let mut counter = state.data.lock().expect("Mutex was poisoned");
+    *counter += 1;
+    println!("{counter}");
+    Html(format!(include_str!("meow_text.html"), counter))
 }
 
-// don't know how to copy this along with build
-// pub async fn home() -> axum::response::Html<String> {
-//     let mut buf = String::new();
-//     let mut file = File::open("./index.html").expect("index.html does not exist");
-//     let result = Read::read_to_string(&mut file, &mut buf);
-//     match result {
-//         Ok(_) => Html(buf),
-//         Err(e) => Html(format!("Error occurred while reading file: {e}").to_owned()),
-//     }
-// }
-
-pub async fn home() -> axum::response::Html<String> {
-    Html(homepage().to_owned())
+#[axum::debug_handler]
+pub async fn meows(State(state): State<AppState>) -> axum::response::Html<String> {
+    Html(get_count_text(state))
 }
 
-const fn homepage() -> &'static str {
-    include_str!("index.html")
+pub async fn home(State(state): State<AppState>) -> axum::response::Html<String> {
+    Html(homepage(get_count_text(state)).to_owned())
+}
+
+fn get_count_text(state: AppState) -> String {
+    let counter = state.data.lock().expect("Mutex was poisoned");
+    format!(include_str!("meow_text.html"), *counter)
+}
+
+fn homepage(count: String) -> String {
+    format!(include_str!("index.html"), count)
 }
