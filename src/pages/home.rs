@@ -5,18 +5,11 @@ use axum::{extract::Path, response::Html};
 #[axum::debug_handler]
 pub async fn meow(Path(num): Path<u64>) -> axum::response::Html<String> {
     println!("data: '{}'", num);
-    Html(
-        format!(
-            "
-    <button hx-get=\"/meow/{}\" hx-swap=\"outerHTML\" hx-target=\"this\">
-    Hi {}
-    </button>
-    ",
-            num + 1,
-            ":3 ".repeat(num as usize).trim_end()
-        )
-        .to_owned(),
-    )
+    Html(format!(
+        include_str!("new_button.html"),
+        num + 1,
+        ":3 ".repeat(num as usize)
+    ))
 }
 
 // don't know how to copy this along with build
