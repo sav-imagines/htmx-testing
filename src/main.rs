@@ -1,12 +1,14 @@
 use std::sync::{Arc, Mutex};
+use crate::{api::meows::{handle_meows_ws, meows}, pages::home::{home, meow}};
 
 use axum::{
     Router,
-    routing::{get, post},
+    routing::{any, get, post},
     serve,
 };
 
 mod pages;
+mod api;
 
 #[tokio::main]
 async fn main() {
@@ -15,9 +17,10 @@ async fn main() {
     };
 
     let app = Router::new()
-        .route("/", get(pages::home::home))
-        .route("/meow", post(pages::home::meow))
-        .route("/meows", get(pages::home::meows))
+        .route("/", get(home))
+        .route("/meow", post(meow))
+        .route("/meows", get(meows))
+        .route("/meow_ws", any(handle_meows_ws))
         .with_state(state);
 
     // run our app with hyper, listening globally on port 3000
