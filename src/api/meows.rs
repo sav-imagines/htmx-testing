@@ -1,3 +1,5 @@
+use std::{thread::sleep, time::Duration};
+
 use axum::{extract::{State, WebSocketUpgrade, ws::WebSocket}, response::{Html, Response}};
 
 use crate::AppState;
@@ -26,6 +28,7 @@ async fn meows_update_socket(mut socket: WebSocket, state: AppState) {
             }
             last_count = current_count;
         }
+        sleep(Duration::from_millis(10));
     }
 }
 
