@@ -1,25 +1,30 @@
+use crate::{
+    api::meows::handle_meows_ws,
+    pages::home::{home, meow, reset},
+};
 use std::sync::{Arc, Mutex};
-use crate::{api::meows::{handle_meows_ws, meows}, pages::home::{home, meow}};
 
 use axum::{
     Router,
     routing::{any, get, post},
     serve,
 };
+use tokio::sync::watch::{Receiver, Sender, channel};
 
-mod pages;
 mod api;
+mod pages;
 
 #[tokio::main]
 async fn main() {
     let state = AppState {
         data: Arc::new(Mutex::new(0u64)),
+        data_channel: channel(0),
     };
 
     let app = Router::new()
         .route("/", get(home))
         .route("/meow", post(meow))
-        .route("/meows", get(meows))
+        .route("/reset", post(reset))
         .route("/meow_ws", any(handle_meows_ws))
         .with_state(state);
 
@@ -31,4 +36,5 @@ async fn main() {
 #[derive(Clone)]
 struct AppState {
     data: Arc<Mutex<u64>>,
+    data_channel: (Sender<u64>, Receiver<u64>),
 }

@@ -8,11 +8,11 @@
   </head>
   <body hx-ext="ws" ws-connect="/meow_ws">
     <main>
-      <button hx-post="/meow" hx-target="next p">
+      <button hx-post="/meow" hx-swap="none">
         Meow :3
       </button>
-      <button hx-get="/meows" hx-target="next p">
-        Update
+      <button hx-post="/reset" hx-swap="none">
+        Reset
       </button>
       <p id="meow_text" >
       {}
